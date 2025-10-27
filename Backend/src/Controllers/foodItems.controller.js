@@ -21,7 +21,10 @@ exports.createFood = async (req, res) => {
     }
 
     //  Upload file to ImageKit (or your file service)
-    const fileUploadResult = await imagekitConfig.uploadFile(req.file.buffer, uuid());
+    const fileUploadResult = await imagekitConfig.uploadFile(
+      req.file.buffer,
+      uuid()
+    );
 
     console.log("fileUploadResult==========>", fileUploadResult);
 
@@ -37,7 +40,7 @@ exports.createFood = async (req, res) => {
       name,
       description,
       video: fileUploadResult.url,
-      foodPartner:req.foodPartner._id,
+      foodPartner: req.foodPartner._id,
     });
 
     //  Success response
@@ -45,7 +48,6 @@ exports.createFood = async (req, res) => {
       message: "Food created successfully",
       foodItem,
     });
-
   } catch (error) {
     console.error("Error creating food item:", error);
     res.status(500).json({
@@ -53,4 +55,15 @@ exports.createFood = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+exports.getFoodItems = async (req, res) => {
+  try {
+    const foodItem = await foodItemModel.find({});
+    console.log("foodItem==>>>>>>",foodItem);
+    res.status(200).json({
+      message: "foodItems fetch sucessfully",
+      foodItem,
+    });
+  } catch (error) {}
 };
