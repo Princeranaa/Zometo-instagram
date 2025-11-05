@@ -18,7 +18,7 @@ exports.registerFoodPartner = async (req, res) => {
     password: hashedPassword,
     phone,
     address,
-    contactName, 
+    contactName,
   });
 
   const token = JWT.sign(
@@ -35,10 +35,9 @@ exports.registerFoodPartner = async (req, res) => {
       id: foodPartner._id,
       name: foodPartner.name,
       email: foodPartner.email,
-      phone:foodPartner.phone,
+      phone: foodPartner.phone,
       address: foodPartner.address,
-      contactName:foodPartner.contactName
-
+      contactName: foodPartner.contactName,
     },
   });
 };
@@ -75,12 +74,10 @@ exports.loginFoodPartner = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({
-        message: "Error in logging in food partner",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error in logging in food partner",
+      error: error.message,
+    });
   }
 };
 

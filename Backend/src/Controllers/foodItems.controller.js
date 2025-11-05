@@ -43,6 +43,9 @@ exports.createFood = async (req, res) => {
       foodPartner: req.foodPartner._id,
     });
 
+    console.log(foodItem);
+    
+
     //  Success response
     res.status(201).json({
       message: "Food created successfully",
@@ -55,6 +58,7 @@ exports.createFood = async (req, res) => {
       error: error.message,
     });
   }
+  
 };
 
 exports.getFoodItems = async (req, res) => {
