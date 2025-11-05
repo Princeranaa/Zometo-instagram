@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 
 exports.registerFoodPartner = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone, address, contactName } = req.body;
   const isAcoountexist = await foodPartnerModel.findOne({ email });
 
   if (isAcoountexist) {
@@ -16,6 +16,9 @@ exports.registerFoodPartner = async (req, res) => {
     name,
     email,
     password: hashedPassword,
+    phone,
+    address,
+    contactName, 
   });
 
   const token = JWT.sign(
@@ -32,6 +35,10 @@ exports.registerFoodPartner = async (req, res) => {
       id: foodPartner._id,
       name: foodPartner.name,
       email: foodPartner.email,
+      phone:foodPartner.phone,
+      address: foodPartner.address,
+      contactName:foodPartner.contactName
+
     },
   });
 };
@@ -56,25 +63,28 @@ exports.loginFoodPartner = async (req, res) => {
       },
       process.env.JWT_SECRET
     );
-    
+
     res.cookie("token", token);
     res.status(200).json({
-        message: "Food Partner log in successfully",
-        foodPartner:{
-            id: foodPartner._id,
-            name: foodPartner.name,
-            email: foodPartner.email,
-        }
-    })
-
-
+      message: "Food Partner log in successfully",
+      foodPartner: {
+        id: foodPartner._id,
+        name: foodPartner.name,
+        email: foodPartner.email,
+      },
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error in logging in food partner", error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Error in logging in food partner",
+        error: error.message,
+      });
   }
 };
 
-exports.LogoutFoodPartner = (req,res)=>{
-    res.clearCookie("token");
-    res.status(200).json({message:"Food Partner logged out successfully"});
-}
+exports.LogoutFoodPartner = (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Food Partner logged out successfully" });
+};
