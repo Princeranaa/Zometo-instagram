@@ -9,6 +9,9 @@ import CreateFood from '../pages/food-partner/CreateFood';
 import Profile from '../pages/food-partner/Profile';
 import BottomNav from '../Components/BottomNav';
 import ChooseRegister from '../pages/auth/ChooseRegister';
+import Saved from '../pages/general/Saved';
+
+
 function AppRoutes() {
   return (
     <Router>
@@ -19,7 +22,7 @@ function AppRoutes() {
                 <Route path="/food-partner/register" element={<FoodPartnerRegister />} />
                 <Route path="/food-partner/login" element={<FoodPartnerLogin />} />
                 <Route path="/" element={<><Home /><BottomNav /></>} />
-                {/* <Route path="/saved" element={<><Saved /><BottomNav /></>} /> */}
+                <Route path="/save" element={<><Saved /><BottomNav /></>} />
                 <Route path="/create-food" element={<CreateFood />} />
                 <Route path="/food/:id" element={<Profile />} />
             </Routes>

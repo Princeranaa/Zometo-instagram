@@ -17,7 +17,7 @@ const BottomNav = () => {
           <span className="bottom-nav__label">Home</span>
         </NavLink>
 
-        <NavLink to="/saved" className={({ isActive }) => `bottom-nav__item ${isActive ? 'is-active' : ''}`}>
+        <NavLink to="/save" className={({ isActive }) => `bottom-nav__item ${isActive ? 'is-active' : ''}`}>
           <span className="bottom-nav__icon" aria-hidden="true">
             {/* bookmark icon */}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

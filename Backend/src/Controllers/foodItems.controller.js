@@ -2,9 +2,8 @@ const foodItemModel = require("../model/foodItem.model");
 const imagekitConfig = require("../config/imagekit");
 const { v4: uuid } = require("uuid");
 const foodpartnerModel = require("../model/foodpartner.model");
-const saveModel = require("../model/SaveModel")
-const likeModel = require("../model/likesModel")
-
+const saveModel = require("../model/SaveModel");
+const likeModel = require("../model/likesModel");
 
 exports.createFood = async (req, res) => {
   try {
@@ -127,7 +126,7 @@ exports.likeFood = async (req, res) => {
   await foodItemModel.findByIdAndUpdate(foodId, {
     $inc: { likeCount: 1 },
   });
-  
+
   res.status(201).json({
     message: "Food liked successfully",
     like,
@@ -170,5 +169,20 @@ exports.saveFood = async (req, res) => {
   res.status(201).json({
     message: "Food saved successfully",
     save,
+  });
+};
+
+exports.getSaveFood = async (req, res) => {
+  const user = req.user;
+
+  const savedFoods = await saveModel.find({ user: user._id }).populate("food");
+
+  if (!savedFoods || savedFoods.length === 0) {
+    return res.status(404).json({ message: "No saved foods found" });
+  }
+
+  res.status(200).json({
+    message: "Saved foods retrieved successfully",
+    savedFoods,
   });
 };

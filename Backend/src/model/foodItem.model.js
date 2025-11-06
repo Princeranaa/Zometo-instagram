@@ -17,10 +17,14 @@ const foodItemSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "foodPartner",
   },
-  likeCount:{
-    type:Number,
-    default:0
-  }
+  likeCount: {
+    type: Number,
+    default: 0,
+  },
+  savesCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("foodItem", foodItemSchema);
