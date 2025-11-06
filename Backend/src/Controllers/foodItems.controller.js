@@ -1,6 +1,10 @@
 const foodItemModel = require("../model/foodItem.model");
 const imagekitConfig = require("../config/imagekit");
 const { v4: uuid } = require("uuid");
+const foodpartnerModel = require("../model/foodpartner.model");
+const saveModel = require("../model/SaveModel")
+const likeModel = require("../model/likesModel")
+
 
 exports.createFood = async (req, res) => {
   try {
@@ -44,7 +48,6 @@ exports.createFood = async (req, res) => {
     });
 
     console.log(foodItem);
-    
 
     //  Success response
     res.status(201).json({
@@ -58,16 +61,114 @@ exports.createFood = async (req, res) => {
       error: error.message,
     });
   }
-  
 };
 
 exports.getFoodItems = async (req, res) => {
   try {
     const foodItem = await foodItemModel.find({});
-    console.log("foodItem==>>>>>>",foodItem);
+    console.log("foodItem==>>>>>>", foodItem);
     res.status(200).json({
       message: "foodItems fetch sucessfully",
       foodItem,
     });
   } catch (error) {}
+};
+
+exports.getFoodPartnerById = async (req, res) => {
+  const foodPartnerId = req.params.id;
+
+  const foodPartner = await foodpartnerModel.findById(foodPartnerId);
+  const foodItemsByFoodPartner = await foodItemModel.find({
+    foodPartner: foodPartnerId,
+  });
+
+  if (!foodPartner) {
+    return res.status(404).json({ message: "Food partner not found" });
+  }
+
+  res.status(200).json({
+    message: "Food partner retrieved successfully",
+    foodPartner: {
+      ...foodPartner.toObject(),
+      foodItems: foodItemsByFoodPartner,
+    },
+  });
+};
+
+exports.likeFood = async (req, res) => {
+  const { foodId } = req.body;
+  const user = req.user;
+
+  const isAlreadyLiked = await likeModel.findOne({
+    user: user._id,
+    food: foodId,
+  });
+
+  if (isAlreadyLiked) {
+    await likeModel.deleteOne({
+      user: user._id,
+      food: foodId,
+    });
+
+    await foodItemModel.findByIdAndUpdate(foodId, {
+      $inc: { likeCount: -1 },
+    });
+
+    return res.status(200).json({
+      message: "Food unliked successfully",
+    });
+  }
+
+  const like = await likeModel.create({
+    user: user._id,
+    food: foodId,
+  });
+
+  await foodItemModel.findByIdAndUpdate(foodId, {
+    $inc: { likeCount: 1 },
+  });
+  
+  res.status(201).json({
+    message: "Food liked successfully",
+    like,
+  });
+};
+
+exports.saveFood = async (req, res) => {
+  const { foodId } = req.body;
+  const user = req.user;
+
+  const isAlreadySaved = await saveModel.findOne({
+    user: user._id,
+    food: foodId,
+  });
+
+  if (isAlreadySaved) {
+    await saveModel.deleteOne({
+      user: user._id,
+      food: foodId,
+    });
+
+    await foodItemModel.findByIdAndUpdate(foodId, {
+      $inc: { savesCount: -1 },
+    });
+
+    return res.status(200).json({
+      message: "Food unsaved successfully",
+    });
+  }
+
+  const save = await saveModel.create({
+    user: user._id,
+    food: foodId,
+  });
+
+  await foodItemModel.findByIdAndUpdate(foodId, {
+    $inc: { savesCount: 1 },
+  });
+
+  res.status(201).json({
+    message: "Food saved successfully",
+    save,
+  });
 };
